@@ -1,54 +1,1109 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dharuna | Cyber Security Specialist (@dharuna_007)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fira Code & Rajdhani -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#050508',
+                            card: 'rgba(12, 18, 28, 0.75)',
+                            border: '#00f0ff22',
+                            green: '#00ff66',
+                            cyan: '#00f0ff',
+                            pink: '#ff007f',
+                            purple: '#9d00ff',
+                            yellow: '#ffcc00'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Fira Code"', 'monospace'],
+                        sans: ['"Rajdhani"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
-    <title>Calculator</title>
+    <style>
+        /* Matrix canvas background styling */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.22;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(10, 15, 25, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5),
+                        inset 0 0 15px rgba(0, 240, 255, 0.05);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.15),
+                        inset 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        /* Glitch text effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 0, 0, 0);
+        }
+
+        .glitch-text::before {
+            left: -2px;
+            text-shadow: 2px 0 #ff007f;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch-text::after {
+            left: 2px;
+            text-shadow: -2px 0 #00f0ff;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(20px, 9999px, 15px, 0); }
+            20% { clip: rect(50px, 9999px, 85px, 0); }
+            40% { clip: rect(10px, 9999px, 40px, 0); }
+            60% { clip: rect(80px, 9999px, 5px, 0); }
+            80% { clip: rect(35px, 9999px, 60px, 0); }
+            100% { clip: rect(65px, 9999px, 90px, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(85px, 9999px, 10px, 0); }
+            20% { clip: rect(15px, 9999px, 60px, 0); }
+            40% { clip: rect(70px, 9999px, 30px, 0); }
+            60% { clip: rect(25px, 9999px, 95px, 0); }
+            80% { clip: rect(60px, 9999px, 20px, 0); }
+            100% { clip: rect(5px, 9999px, 50px, 0); }
+        }
+
+        /* Scanline Overlay */
+        .scanline {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.25) 50%,
+                rgba(0, 0, 0, 0.25)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00f0ff33;
+            border-radius: 4px;
+            border: 1px solid #00f0ff66;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ffaa;
+        }
+
+        /* Neon Pulse Glow */
+        .neon-glow-cyan {
+            filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.6));
+        }
+        .neon-glow-green {
+            filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.6));
+        }
+        .neon-glow-pink {
+            filter: drop-shadow(0 0 10px rgba(255, 0, 127, 0.6));
+        }
+
+        /* Profile Cyber Border Pulse */
+        @keyframes border-pulse {
+            0% { border-color: rgba(0, 240, 255, 0.8); box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+            50% { border-color: rgba(255, 0, 127, 0.8); box-shadow: 0 0 25px rgba(255, 0, 127, 0.5); }
+            100% { border-color: rgba(0, 255, 102, 0.8); box-shadow: 0 0 15px rgba(0, 255, 102, 0.4); }
+        }
+
+        .cyber-avatar-border {
+            animation: border-pulse 4s infinite alternate;
+        }
+
+        /* Modal backdrop blur */
+        .modal-blur {
+            backdrop-filter: blur(8px);
+        }
+    </style>
 </head>
+<body class="bg-cyber-bg text-gray-200 font-sans min-h-screen relative overflow-x-hidden">
 
-<body>
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrix-canvas"></canvas>
+    <!-- CRT Scanlines effect -->
+    <div class="scanline"></div>
 
-    <div class="calculator">
+    <div class="relative z-10 flex flex-col min-h-screen">
 
-        <!-- Display -->
-        <input type="text" id="display" value="0" readonly>
+        <!-- Navigation Bar -->
+        <header class="sticky top-0 z-50 glass-panel border-b border-cyber-cyan/20 px-4 lg:px-8 py-3">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <!-- Brand / Logo -->
+                <a href="#hero" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/50 flex items-center justify-center font-mono font-bold text-cyber-cyan group-hover:scale-105 transition-transform">
+                        D007
+                    </div>
+                    <div>
+                        <span class="font-mono font-bold text-lg text-white tracking-wider flex items-center gap-1">
+                            DHARUNA <span class="text-xs text-cyber-cyan font-normal">v2.6</span> 🪷🦢
+                        </span>
+                        <div class="text-[10px] font-mono text-cyber-green flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-cyber-green inline-block animate-ping"></span>
+                            SEC_LEVEL: ACCESS_GRANTED
+                        </div>
+                    </div>
+                </a>
 
-        <!-- Buttons -->
-        <div class="buttons">
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center space-x-6 font-mono text-sm">
+                    <a href="#about" class="text-gray-400 hover:text-cyber-cyan transition-colors hover:glow">&lt;/About&gt;</a>
+                    <a href="#skills" class="text-gray-400 hover:text-cyber-cyan transition-colors">&lt;/Skills&gt;</a>
+                    <a href="#academics" class="text-gray-400 hover:text-cyber-cyan transition-colors">&lt;/Academic_Records&gt;</a>
+                    <a href="#terminal" class="text-gray-400 hover:text-cyber-green transition-colors">&lt;/CLI_Terminal&gt;</a>
+                    <a href="#socials" class="text-gray-400 hover:text-cyber-pink transition-colors">&lt;/Socials&gt;</a>
+                </nav>
 
-            <button class="clear" id="clear">C</button>
-            <button id="backspace">⌫</button>
-            <button class="operator" data-value="/">÷</button>
-            <button class="operator" data-value="*">×</button>
+                <!-- Action Button -->
+                <div class="flex items-center space-x-3">
+                    <a href="#terminal" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded text-xs font-mono bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/40 hover:bg-cyber-cyan/20 transition-all">
+                        <i class="fas font-mono fa-terminal mr-2"></i>SYS_LOG
+                    </a>
+                    <button id="mobile-menu-btn" class="md:hidden text-cyber-cyan p-2 rounded hover:bg-cyber-cyan/10">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
 
-            <button class="number">7</button>
-            <button class="number">8</button>
-            <button class="number">9</button>
-            <button class="operator" data-value="-">−</button>
+            <!-- Mobile Nav Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-cyber-cyan/20 mt-3 font-mono text-sm space-y-2">
+                <a href="#about" class="block py-2 text-gray-300 hover:text-cyber-cyan">&gt; About Me</a>
+                <a href="#skills" class="block py-2 text-gray-300 hover:text-cyber-cyan">&gt; Security Skills</a>
+                <a href="#academics" class="block py-2 text-gray-300 hover:text-cyber-cyan">&gt; Marksheets & GPA</a>
+                <a href="#terminal" class="block py-2 text-gray-300 hover:text-cyber-green">&gt; Interactive Terminal</a>
+                <a href="#socials" class="block py-2 text-gray-300 hover:text-cyber-pink">&gt; Social Profiles</a>
+            </div>
+        </header>
 
-            <button class="number">4</button>
-            <button class="number">5</button>
-            <button class="number">6</button>
-            <button class="operator" data-value="+">+</button>
+        <!-- Hero Section -->
+        <section id="hero" class="relative pt-12 pb-20 px-4 max-w-7xl mx-auto w-full flex-grow flex items-center justify-center">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full">
+                
+                <!-- Left Details Column -->
+                <div class="lg:col-span-7 space-y-6 text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border-cyber-cyan/30 text-cyber-cyan text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-cyber-cyan animate-pulse"></span>
+                        SRI SAIRAM ENGINEERING COLLEGE | CSE (CYBER SECURITY)
+                    </div>
 
-            <button class="number">1</button>
-            <button class="number">2</button>
-            <button class="number">3</button>
-            <button id="equals">=</button>
+                    <div class="space-y-2">
+                        <p class="font-mono text-cyber-green text-sm tracking-wide">&gt; SYSTEM.INITIALIZE_IDENTITY</p>
+                        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold font-mono tracking-tight text-white">
+                            I'm <span class="glitch-text text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-cyber-green to-cyber-pink" data-text="Dharuna">Dharuna</span>
+                        </h1>
+                        <p class="text-xl sm:text-2xl text-cyber-pink font-mono flex items-center gap-2">
+                            <span>@dharuna_007</span> 
+                            <span class="text-2xl">🪷🦢</span>
+                        </p>
+                    </div>
 
-            <button class="number zero">0</button>
-            <button class="number">.</button>
+                    <p class="text-gray-400 text-base sm:text-lg max-w-2xl leading-relaxed">
+                        Cyber Security Scholar & Digital Forensics Enthusiast. Dedicated to building secure network architectures, auditing vulnerability vectors, and crafting futuristic cyber interfaces.
+                    </p>
 
-        </div>
+                    <!-- Interactive Typing Console -->
+                    <div class="glass-panel p-4 rounded-lg font-mono text-sm border-l-4 border-l-cyber-cyan space-y-2">
+                        <div class="flex items-center justify-between text-xs text-gray-500 border-b border-gray-800 pb-2">
+                            <span>bash - 80x24</span>
+                            <span class="flex gap-1.5">
+                                <span class="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block"></span>
+                            </span>
+                        </div>
+                        <div class="text-cyber-green min-h-[48px] flex items-center">
+                            <span id="typing-text" class="text-cyber-cyan font-bold"></span>
+                            <span class="w-2 h-4 bg-cyber-green inline-block ml-1 animate-pulse"></span>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <a href="#academics" class="px-6 py-3 rounded-lg font-mono text-sm font-semibold bg-cyber-cyan text-black hover:bg-cyan-300 transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)] flex items-center gap-2">
+                            <i class="fas fa-file-invoice"></i> View Marksheets
+                        </a>
+                        <a href="#socials" class="px-6 py-3 rounded-lg font-mono text-sm font-semibold glass-panel border border-cyber-pink/50 text-cyber-pink hover:bg-cyber-pink/10 transition-all flex items-center gap-2">
+                            <i class="fab fa-instagram"></i> Instagram (@dharuna_007)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Profile Avatar Column -->
+                <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                    <div class="relative group">
+                        <!-- Neon Glow Ring -->
+                        <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-cyber-cyan via-cyber-green to-cyber-pink opacity-75 blur-md group-hover:opacity-100 transition duration-1000"></div>
+                        
+                        <!-- Main Frame -->
+                        <div class="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full overflow-hidden border-4 border-cyber-cyan cyber-avatar-border bg-cyber-bg flex items-center justify-center">
+                            <img id="profile-img" src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop" 
+                                 alt="Dharuna Avatar" 
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition duration-500"
+                                 onerror="this.src='https://placehold.co/400x400/0a0f19/00f0ff?text=Dharuna+007'">
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-cyber-bg via-transparent to-transparent opacity-60"></div>
+                            
+                            <!-- Overlay Tag -->
+                            <div class="absolute bottom-4 bg-cyber-bg/90 border border-cyber-cyan/50 text-cyber-cyan font-mono text-[11px] px-3 py-1 rounded-full">
+                                ID: DHARUNA_007 🪷
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo Upload / Avatar Switcher Controls -->
+                    <div class="mt-6 glass-panel p-3 rounded-xl flex items-center gap-3 border-cyber-cyan/30 text-xs font-mono">
+                        <label for="photo-upload" class="cursor-pointer px-3 py-1.5 rounded bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan/30 transition-all flex items-center gap-1.5">
+                            <i class="fas fa-upload"></i> Upload Custom Photo
+                        </label>
+                        <input type="file" id="photo-upload" accept="image/*" class="hidden">
+                        
+                        <button id="reset-photo-btn" class="px-2.5 py-1.5 rounded bg-gray-800 text-gray-400 hover:text-white transition-all" title="Reset Default Picture">
+                            <i class="fas fa-undo"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] font-mono text-gray-500 mt-2">Personalize photo dynamically in your preview</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- About & Stats Section -->
+        <section id="about" class="py-16 px-4 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="h-8 w-1 bg-cyber-cyan rounded-full"></div>
+                <h2 class="text-2xl sm:text-3xl font-mono font-bold text-white tracking-wide">
+                    &lt;ABOUT_THE_SECURITY_SPECIALIST /&gt;
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Academic Card -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-l-cyber-cyan space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan text-2xl">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-xl font-mono font-bold text-white">Institution</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Currently pursuing <strong class="text-cyber-cyan">B.E. CSE (Cyber Security)</strong> at the prestigious <strong class="text-white">Sri Sairam Engineering College</strong>.
+                    </p>
+                    <ul class="text-xs font-mono text-gray-400 space-y-1 pt-2 border-t border-gray-800">
+                        <li>• Dept: CSE (Cyber Security)</li>
+                        <li>• College: Sri Sairam Engg College</li>
+                        <li>• Specialization: Defense & Ethical Hacking</li>
+                    </ul>
+                </div>
+
+                <!-- Passion & Focus Card -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-l-cyber-green space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-cyber-green/10 border border-cyber-green/30 flex items-center justify-center text-cyber-green text-2xl">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-xl font-mono font-bold text-white">Cyber Focus</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Passionate about Network Defense, Vulnerability Assessment, Pen-testing, Cryptography, and Web Vulnerability Research.
+                    </p>
+                    <ul class="text-xs font-mono text-gray-400 space-y-1 pt-2 border-t border-gray-800">
+                        <li>• Ethical Hacking & Security Audits</li>
+                        <li>• Web Application Penetration Testing</li>
+                        <li>• Digital Forensics & Log Analysis</li>
+                    </ul>
+                </div>
+
+                <!-- Personal Aesthetics Card -->
+                <div class="glass-panel p-6 rounded-xl border-l-4 border-l-cyber-pink space-y-4">
+                    <div class="w-12 h-12 rounded-lg bg-cyber-pink/10 border border-cyber-pink/30 flex items-center justify-center text-cyber-pink text-2xl">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <h3 class="text-xl font-mono font-bold text-white">Digital Identity</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Known online as <span class="text-cyber-pink font-semibold">@dharuna_007</span> with signature lotus and swan cyber emblems 🪷🦢 representing precision & elegance.
+                    </p>
+                    <ul class="text-xs font-mono text-gray-400 space-y-1 pt-2 border-t border-gray-800">
+                        <li>• Handle: @dharuna_007</li>
+                        <li>• Signature: 🪷 Swan & Lotus Hacker Aesthetics 🦢</li>
+                        <li>• Status: Active Cyber Scholar</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Grid Section -->
+        <section id="skills" class="py-12 px-4 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="h-8 w-1 bg-cyber-green rounded-full"></div>
+                <h2 class="text-2xl sm:text-3xl font-mono font-bold text-white tracking-wide">
+                    &lt;TECHNICAL_CAPABILITIES /&gt;
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-cyan transition-all group">
+                    <i class="fas fa-network-wired text-3xl text-cyber-cyan mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">Network Security</h4>
+                    <p class="text-[10px] font-mono text-gray-400">Wireshark & Packet Analysis</p>
+                </div>
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-green transition-all group">
+                    <i class="fas fa-terminal text-3xl text-cyber-green mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">Ethical Hacking</h4>
+                    <p class="text-[10px] font-mono text-gray-400">Linux / Kali & Nmap</p>
+                </div>
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-pink transition-all group">
+                    <i class="fas fa-bug text-3xl text-cyber-pink mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">Web Security</h4>
+                    <p class="text-[10px] font-mono text-gray-400">OWASP Top 10 Auditing</p>
+                </div>
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-yellow transition-all group">
+                    <i class="fab fa-python text-3xl text-cyber-yellow mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">Python Scripting</h4>
+                    <p class="text-[10px] font-mono text-gray-400">Security Automation</p>
+                </div>
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-cyan transition-all group">
+                    <i class="fas fa-lock text-3xl text-cyber-cyan mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">Cryptography</h4>
+                    <p class="text-[10px] font-mono text-gray-400">Ciphers & Hashes</p>
+                </div>
+                <!-- Skill Item -->
+                <div class="glass-panel p-4 rounded-xl text-center hover:border-cyber-purple transition-all group">
+                    <i class="fas fa-code text-3xl text-cyber-purple mb-2 group-hover:scale-110 transition-transform"></i>
+                    <h4 class="font-mono text-sm font-bold text-white">C / C++ & Java</h4>
+                    <p class="text-[10px] font-mono text-gray-400">Core Logic & DSA</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academic Marksheets & Semester Dashboard Section -->
+        <section id="academics" class="py-16 px-4 max-w-7xl mx-auto w-full">
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-1 bg-cyber-pink rounded-full"></div>
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-mono font-bold text-white tracking-wide">
+                            &lt;ACADEMIC_MARKSHEETS_&amp;_GPA /&gt;
+                        </h2>
+                        <p class="text-xs font-mono text-gray-400">Official High School Marksheets (11th, 12th) & College Semester Performance</p>
+                    </div>
+                </div>
+
+                <!-- Update Marks Trigger Button -->
+                <button id="edit-marks-btn" class="px-4 py-2 rounded-lg font-mono text-xs bg-cyber-pink/20 text-cyber-pink border border-cyber-pink/50 hover:bg-cyber-pink/30 transition-all flex items-center gap-2">
+                    <i class="fas fa-edit"></i> Edit / Update Semester Marks
+                </button>
+            </div>
+
+            <!-- High School Marksheets Cards (11th & 12th) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                
+                <!-- 11th Marksheet Card -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden border-cyber-cyan/30 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30">HSC CLASS XI</span>
+                            <h3 class="text-2xl font-mono font-bold text-white mt-2">11th Standard Marksheet</h3>
+                            <p class="text-xs text-gray-400 font-mono">State Board Examination Record</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/40 flex items-center justify-center text-cyber-cyan text-xl">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                    </div>
+
+                    <!-- Marks preview list -->
+                    <div class="space-y-2 py-3 border-t border-b border-gray-800 text-xs font-mono">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Mathematics / Logic:</span>
+                            <span class="text-cyber-green font-bold">Passed (A+)</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Physics & Electronics:</span>
+                            <span class="text-cyber-green font-bold">Passed (A+)</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Computer Science:</span>
+                            <span class="text-cyber-green font-bold">Passed (O Grade)</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Overall Board Result:</span>
+                            <span class="text-cyber-cyan font-bold">FIRST CLASS WITH DISTINCTION</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 flex gap-3">
+                        <button onclick="openMarksheetModal('11th Standard Marksheet', 'Class 11 Board Examinations Certificate', '11th')" class="flex-1 py-2 rounded font-mono text-xs font-bold bg-cyber-cyan/20 border border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-eye"></i> Inspect Certificate
+                        </button>
+                        <a href="#" onclick="downloadMockSheet('11th_Marksheet_Dharuna.pdf'); return false;" class="px-3 py-2 rounded font-mono text-xs glass-panel border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 transition-all flex items-center justify-center" title="Download Document">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 12th Marksheet Card -->
+                <div class="glass-panel p-6 rounded-2xl relative overflow-hidden border-cyber-green/30 group">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="px-2.5 py-1 rounded text-[10px] font-mono bg-cyber-green/10 text-cyber-green border border-cyber-green/30">HSC CLASS XII</span>
+                            <h3 class="text-2xl font-mono font-bold text-white mt-2">12th Standard Marksheet</h3>
+                            <p class="text-xs text-gray-400 font-mono">Higher Secondary Final Board Transcript</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-cyber-green/10 border border-cyber-green/40 flex items-center justify-center text-cyber-green text-xl">
+                            <i class="fas fa-award"></i>
+                        </div>
+                    </div>
+
+                    <!-- Marks preview list -->
+                    <div class="space-y-2 py-3 border-t border-b border-gray-800 text-xs font-mono">
+                        <div class="flex justify-between text-gray-300">
+                            <span>Advanced CS & Programming:</span>
+                            <span class="text-cyber-green font-bold">98 / 100</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Mathematics:</span>
+                            <span class="text-cyber-green font-bold">95 / 100</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Physics & Chemistry:</span>
+                            <span class="text-cyber-green font-bold">High Distinction</span>
+                        </div>
+                        <div class="flex justify-between text-gray-300">
+                            <span>Cutoff Score:</span>
+                            <span class="text-cyber-green font-bold">EXCELLENT (Eligible for Cyber Security)</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 flex gap-3">
+                        <button onclick="openMarksheetModal('12th Standard Marksheet', 'Class 12 Higher Secondary School Leaving Certificate', '12th')" class="flex-1 py-2 rounded font-mono text-xs font-bold bg-cyber-green/20 border border-cyber-green text-cyber-green hover:bg-cyber-green/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-eye"></i> Inspect Certificate
+                        </button>
+                        <a href="#" onclick="downloadMockSheet('12th_Marksheet_Dharuna.pdf'); return false;" class="px-3 py-2 rounded font-mono text-xs glass-panel border border-gray-700 text-gray-300 hover:text-white hover:border-gray-500 transition-all flex items-center justify-center" title="Download Document">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- College Semester Performance Matrix (Sri Sairam Engineering College) -->
+            <div class="glass-panel p-6 sm:p-8 rounded-2xl border-cyber-pink/30">
+                <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                    <div>
+                        <span class="text-xs font-mono text-cyber-pink tracking-widest">&gt; SRI SAIRAM ENGINEERING COLLEGE - CSE (CYBER SECURITY)</span>
+                        <h3 class="text-xl sm:text-2xl font-mono font-bold text-white">Semester Academic Grades Log</h3>
+                    </div>
+                    <div class="flex items-center gap-2 bg-cyber-pink/10 border border-cyber-pink/30 px-3 py-1.5 rounded-lg font-mono text-xs text-cyber-pink">
+                        <i class="fas fa-chart-line"></i> Cumulative GPA: <span id="cgpa-display" class="font-bold text-white text-sm">8.85 / 10.0</span>
+                    </div>
+                </div>
+
+                <!-- Table of Semesters -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left font-mono text-xs sm:text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400 uppercase text-[11px] tracking-wider">
+                                <th class="pb-3 px-3">Semester</th>
+                                <th class="pb-3 px-3">Key Security / CS Subjects</th>
+                                <th class="pb-3 px-3 text-center">GPA</th>
+                                <th class="pb-3 px-3 text-center">Status</th>
+                                <th class="pb-3 px-3 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="semesters-table-body" class="divide-y divide-gray-800/60">
+                            <!-- Rows populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Terminal CLI Component -->
+        <section id="terminal" class="py-16 px-4 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-8 w-1 bg-cyber-green rounded-full"></div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-white tracking-wide">
+                        &lt;INTERACTIVE_HACKER_TERMINAL /&gt;
+                    </h2>
+                    <p class="text-xs font-mono text-gray-400">Type commands to query Dharuna's system directly. Type 'help' for instructions.</p>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden border-cyber-green/40 shadow-2xl">
+                <!-- Terminal Header Bar -->
+                <div class="bg-gray-950/80 px-4 py-3 border-b border-gray-800 flex items-center justify-between font-mono text-xs">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                        <span class="ml-2 text-gray-400 text-[11px] hidden sm:inline">dharuna@sairam-cyber-sec:~#</span>
+                    </div>
+                    <div class="text-cyber-green font-bold">
+                        DHARUNA_OS v2.6 [CLI] 🪷
+                    </div>
+                    <div class="text-gray-500 text-[10px]">
+                        TTY1 - BASH
+                    </div>
+                </div>
+
+                <!-- Terminal Console Body -->
+                <div id="terminal-body" class="p-4 sm:p-6 font-mono text-xs sm:text-sm h-80 overflow-y-auto space-y-3 text-gray-300 bg-black/60">
+                    <div>
+                        <span class="text-cyber-cyan font-bold">Welcome to Dharuna's Interactive Cyber Terminal!</span><br>
+                        Type <span class="text-cyber-green font-bold">'help'</span> to view available system commands or <span class="text-cyber-pink font-bold">'socials'</span> to get direct links.
+                    </div>
+                </div>
+
+                <!-- Terminal Input Form -->
+                <form id="terminal-form" class="bg-gray-950/90 p-3 border-t border-gray-800 flex items-center gap-2">
+                    <span class="text-cyber-green font-mono font-bold text-sm pl-2">dharuna@sairam:~$</span>
+                    <input type="text" id="terminal-input" 
+                           class="flex-1 bg-transparent border-none outline-none font-mono text-xs sm:text-sm text-cyber-cyan placeholder-gray-600 focus:ring-0" 
+                           placeholder="Type command here (e.g., 'help', 'marks', 'skills')..." 
+                           autocomplete="off">
+                    <button type="submit" class="px-4 py-1.5 rounded font-mono text-xs bg-cyber-green/20 text-cyber-green border border-cyber-green/40 hover:bg-cyber-green/30 transition-all">
+                        EXECUTE
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Social Profiles & Links Section -->
+        <section id="socials" class="py-16 px-4 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="h-8 w-1 bg-cyber-pink rounded-full"></div>
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-mono font-bold text-white tracking-wide">
+                        &lt;CONNECT_&amp;_SOCIAL_NODES /&gt;
+                    </h2>
+                    <p class="text-xs font-mono text-gray-400">Direct links to official Instagram &amp; LinkedIn handles</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Instagram Card -->
+                <div class="glass-panel p-8 rounded-2xl border-cyber-pink/40 hover:border-cyber-pink transition-all flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-cyber-pink text-9xl group-hover:scale-110 transition-transform">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 p-0.5 shadow-lg">
+                                <div class="w-full h-full bg-cyber-bg rounded-[14px] flex items-center justify-center text-cyber-pink text-2xl">
+                                    <i class="fab fa-instagram"></i>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-pink/20 text-cyber-pink border border-cyber-pink/40">
+                                INSTAGRAM NODE
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-mono font-bold text-white flex items-center gap-2">
+                                Dharuna 🪷🦢
+                            </h3>
+                            <p class="text-cyber-pink font-mono text-sm font-semibold">@dharuna_007</p>
+                            <p class="text-xs text-gray-400 font-mono mt-2 leading-relaxed">
+                                Instagram handle: <span class="text-white">@dharuna_007</span>. Explore photos, lifestyle, cyber security updates, and campus vibes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 mt-6 border-t border-gray-800">
+                        <a href="https://www.instagram.com/dharuna_007" target="_blank" rel="noopener noreferrer" class="w-full py-3 rounded-xl font-mono text-sm font-bold bg-gradient-to-r from-pink-600 to-purple-600 text-white hover:from-pink-500 hover:to-purple-500 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,0,127,0.4)]">
+                            <i class="fab fa-instagram text-lg"></i> Open @dharuna_007 on Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <!-- LinkedIn Card -->
+                <div class="glass-panel p-8 rounded-2xl border-cyber-cyan/40 hover:border-cyber-cyan transition-all flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-cyber-cyan text-9xl group-hover:scale-110 transition-transform">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-14 h-14 rounded-2xl bg-cyber-cyan/10 border border-cyber-cyan/50 flex items-center justify-center text-cyber-cyan text-2xl">
+                                <i class="fab fa-linkedin-in"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-mono bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40">
+                                PROFESSIONAL NODE
+                            </span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-mono font-bold text-white">
+                                Dharuna
+                            </h3>
+                            <p class="text-cyber-cyan font-mono text-sm font-semibold">LinkedIn Network</p>
+                            <p class="text-xs text-gray-400 font-mono mt-2 leading-relaxed">
+                                Professional network profile. Connect for Cyber Security collaborations, internships, and technical research at Sri Sairam Engineering College.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 mt-6 border-t border-gray-800">
+                        <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="w-full py-3 rounded-xl font-mono text-sm font-bold bg-cyber-cyan text-black hover:bg-cyan-300 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+                            <i class="fab fa-linkedin text-lg"></i> Connect on LinkedIn
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="glass-panel border-t border-cyber-cyan/20 py-8 px-4 mt-auto text-center font-mono text-xs text-gray-500">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-left">
+                    <p class="text-gray-300 font-bold">DHARUNA | CSE (CYBER SECURITY)</p>
+                    <p class="text-[11px] text-gray-500">Sri Sairam Engineering College 🪷🦢</p>
+                </div>
+                <div class="text-center sm:text-right">
+                    <p class="text-cyber-cyan">Instagram: @dharuna_007</p>
+                    <p class="text-[11px] text-gray-500">&copy; 2026 Dharuna Cyber Portfolio. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
 
     </div>
 
-    <script src="script.js"></script>
+    <!-- Marksheet Viewing Inspection Modal -->
+    <div id="marksheet-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-blur">
+        <div class="glass-panel w-full max-w-2xl rounded-2xl border-cyber-cyan p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeMarksheetModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3 border-b border-gray-800 pb-3">
+                    <i class="fas fa-certificate text-cyber-cyan text-2xl"></i>
+                    <div>
+                        <h3 id="modal-title" class="text-xl font-mono font-bold text-white">Marksheet Document</h3>
+                        <p id="modal-subtitle" class="text-xs font-mono text-gray-400">Official Grade Certificate</p>
+                    </div>
+                </div>
 
+                <!-- Embedded Certificate View Container -->
+                <div class="border border-cyber-cyan/30 rounded-xl p-6 bg-gray-950/90 font-mono text-xs space-y-4 text-center">
+                    <div class="border-b border-gray-800 pb-4">
+                        <p class="text-cyber-cyan font-bold text-base">SRI SAIRAM ENGINEERING COLLEGE & ACADEMIC BOARD</p>
+                        <p class="text-gray-400 text-[11px]">CERTIFICATE OF SCHOLASTIC PERFORMANCE</p>
+                    </div>
+                    
+                    <div class="py-4 space-y-2 text-left bg-black/40 p-4 rounded-lg border border-gray-800">
+                        <p><span class="text-gray-500">Candidate Name:</span> <strong class="text-white">DHARUNA (@dharuna_007)</strong></p>
+                        <p><span class="text-gray-500">Department:</span> <strong class="text-cyber-green">CSE (CYBER SECURITY)</strong></p>
+                        <p><span class="text-gray-500">Institution:</span> <strong class="text-white">Sri Sairam Engineering College</strong></p>
+                        <p><span class="text-gray-500">Document Type:</span> <strong id="modal-type-label" class="text-cyber-pink">Class 12 Board Transcript</strong></p>
+                        <p><span class="text-gray-500">Verification Hash:</span> <span class="text-gray-400 text-[10px]">0x7F89B2C4E1007A3F99</span></p>
+                    </div>
+
+                    <div class="p-4 bg-cyber-cyan/5 rounded border border-cyber-cyan/20 text-cyber-cyan text-xs">
+                        <i class="fas fa-shield-alt mr-1"></i> Digitally Signed & Authenticated for Cyber Security Dept Record
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <button onclick="closeMarksheetModal()" class="px-4 py-2 rounded font-mono text-xs bg-gray-800 text-gray-300 hover:text-white">Close</button>
+                    <button onclick="downloadMockSheet('Dharuna_Official_Marksheet.pdf')" class="px-4 py-2 rounded font-mono text-xs bg-cyber-cyan text-black font-bold hover:bg-cyan-300">
+                        <i class="fas fa-download mr-1"></i> Download Verified PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Marks Modal -->
+    <div id="edit-marks-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 modal-blur">
+        <div class="glass-panel w-full max-w-lg rounded-2xl border-cyber-pink p-6 relative">
+            <button onclick="closeEditMarksModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl p-2">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-xl font-mono font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fas fa-database text-cyber-pink"></i> Update Semester Record
+            </h3>
+            <p class="text-xs font-mono text-gray-400 mb-4">Add or modify your GPA marks for semesters.</p>
+
+            <form id="marks-form" class="space-y-4 font-mono text-xs">
+                <div>
+                    <label class="block text-gray-300 mb-1">Select Semester</label>
+                    <select id="sem-select" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-cyber-pink">
+                        <option value="Sem 1">Semester 1</option>
+                        <option value="Sem 2">Semester 2</option>
+                        <option value="Sem 3">Semester 3</option>
+                        <option value="Sem 4">Semester 4</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">Subjects & Highlights</label>
+                    <input type="text" id="sem-subjects" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-cyber-pink" placeholder="e.g. Cryptography, Eth Hacking, Networks">
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-1">GPA (0.00 - 10.00)</label>
+                    <input type="number" step="0.01" min="0" max="10" id="sem-gpa" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-cyber-pink" placeholder="e.g. 9.12">
+                </div>
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeEditMarksModal()" class="px-4 py-2 rounded bg-gray-800 text-gray-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded bg-cyber-pink text-white font-bold hover:bg-pink-600">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Box -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden glass-panel border-cyber-cyan px-4 py-3 rounded-xl font-mono text-xs text-cyber-cyan shadow-xl flex items-center gap-2">
+        <i class="fas fa-info-circle"></i>
+        <span id="toast-msg">Action completed successfully.</span>
+    </div>
+
+    <script>
+        /* Matrix Digital Rain Animation */
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789DHARUNA007🪷🦢';
+        const alphabet = katakana + latin;
+
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let rainDrops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 5, 8, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#00f0ff';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        /* Interactive Typing Console Logic */
+        const typingPhrases = [
+            "$ standard_user --init Dharuna",
+            "$ status: Cyber Security Specialist @ Sri Sairam",
+            "$ ig_handle: @dharuna_007 🪷🦢",
+            "$ loading security modules: Penetration Testing | Forensics | Cryptography..."
+        ];
+        let phraseIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+        const typingElem = document.getElementById('typing-text');
+
+        function typeLoop() {
+            const currentPhrase = typingPhrases[phraseIdx];
+            
+            if (isDeleting) {
+                typingElem.textContent = currentPhrase.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                typingElem.textContent = currentPhrase.substring(0, charIdx + 1);
+                charIdx++;
+            }
+
+            let typeSpeed = isDeleting ? 30 : 70;
+
+            if (!isDeleting && charIdx === currentPhrase.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                phraseIdx = (phraseIdx + 1) % typingPhrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeLoop, typeSpeed);
+        }
+        typeLoop();
+
+        /* Mobile Menu Toggle */
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        /* Photo Upload & Preview Handler */
+        const photoUploadInput = document.getElementById('photo-upload');
+        const profileImg = document.getElementById('profile-img');
+        const resetPhotoBtn = document.getElementById('reset-photo-btn');
+        const defaultImgSrc = 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop';
+
+        photoUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    profileImg.src = evt.target.result;
+                    showToast("Profile image updated successfully!");
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        resetPhotoBtn.addEventListener('click', () => {
+            profileImg.src = defaultImgSrc;
+            showToast("Profile photo reset to default avatar.");
+        });
+
+        /* Academic Marks Data Storage & Table Rendering */
+        let semesterData = [
+            { sem: "Sem 1", subjects: "Programming in C, Engineering Maths, Cyber Ethics", gpa: "8.90", status: "PASSED (O Grade)" },
+            { sem: "Sem 2", subjects: "Data Structures, Digital Logic, Python for Cyber Security", gpa: "8.80", status: "PASSED (A+)" },
+            { sem: "Sem 3", subjects: "Computer Networks, Cryptography, OS Hardening", gpa: "8.95", status: "PASSED (O Grade)" },
+            { sem: "Sem 4", subjects: "Web Security, Pen Testing, Digital Forensics Labs", gpa: "8.75", status: "PASSED (A+)" }
+        ];
+
+        function renderSemesters() {
+            const tbody = document.getElementById('semesters-table-body');
+            tbody.innerHTML = '';
+
+            let totalGPA = 0;
+            semesterData.forEach(item => {
+                totalGPA += parseFloat(item.gpa);
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-cyber-pink/5 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-cyber-pink">${item.sem}</td>
+                    <td class="py-3 px-3 text-gray-300">${item.subjects}</td>
+                    <td class="py-3 px-3 text-center text-cyber-green font-bold">${item.gpa}</td>
+                    <td class="py-3 px-3 text-center">
+                        <span class="px-2 py-0.5 rounded text-[10px] bg-cyber-green/10 text-cyber-green border border-cyber-green/30">${item.status}</span>
+                    </td>
+                    <td class="py-3 px-3 text-right">
+                        <button onclick="inspectSem('${item.sem}')" class="text-cyber-cyan hover:underline text-xs">Details</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const avgGPA = (totalGPA / semesterData.length).toFixed(2);
+            document.getElementById('cgpa-display').textContent = `${avgGPA} / 10.0`;
+        }
+        renderSemesters();
+
+        /* Edit Marks Modal Controls */
+        const editMarksBtn = document.getElementById('edit-marks-btn');
+        const editMarksModal = document.getElementById('edit-marks-modal');
+        const marksForm = document.getElementById('marks-form');
+
+        editMarksBtn.addEventListener('click', () => {
+            editMarksModal.classList.remove('hidden');
+            editMarksModal.classList.add('flex');
+        });
+
+        function closeEditMarksModal() {
+            editMarksModal.classList.add('hidden');
+            editMarksModal.classList.remove('flex');
+        }
+
+        marksForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const semSelect = document.getElementById('sem-select').value;
+            const semSubjects = document.getElementById('sem-subjects').value || 'Cyber Security Protocols & Defense';
+            const semGpa = parseFloat(document.getElementById('sem-gpa').value) || 8.80;
+
+            const existing = semesterData.find(s => s.sem === semSelect);
+            if (existing) {
+                existing.subjects = semSubjects;
+                existing.gpa = semGpa.toFixed(2);
+            } else {
+                semesterData.push({
+                    sem: semSelect,
+                    subjects: semSubjects,
+                    gpa: semGpa.toFixed(2),
+                    status: "PASSED"
+                });
+            }
+
+            renderSemesters();
+            closeEditMarksModal();
+            showToast(`Semester record for ${semSelect} updated!`);
+        });
+
+        /* Marksheet Viewing Inspection Modal Handlers */
+        function openMarksheetModal(title, subtitle, type) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-subtitle').textContent = subtitle;
+            document.getElementById('modal-type-label').textContent = `${type} Standard Official Certificate`;
+            
+            const modal = document.getElementById('marksheet-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeMarksheetModal() {
+            const modal = document.getElementById('marksheet-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function inspectSem(semName) {
+            openMarksheetModal(`${semName} Grade Report`, `Sri Sairam Engineering College - CSE (Cyber Security)`, semName);
+        }
+
+        function downloadMockSheet(filename) {
+            showToast(`Initiating secure download: ${filename}...`);
+        }
+
+        /* Interactive Terminal System */
+        const termForm = document.getElementById('terminal-form');
+        const termInput = document.getElementById('terminal-input');
+        const termBody = document.getElementById('terminal-body');
+
+        termForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cmd = termInput.value.trim().toLowerCase();
+            if (!cmd) return;
+
+            // Echo user command
+            appendTermLine(`dharuna@sairam:~$ ${cmd}`, 'text-cyber-green font-bold');
+            termInput.value = '';
+
+            // Process command
+            switch(cmd) {
+                case 'help':
+                    appendTermLine(`
+                      Available Commands:
+                      - 'help'     : List all available system CLI commands
+                      - 'about'    : Display college and department background
+                      - 'skills'   : Print cyber security capabilities & tools
+                      - 'marks'    : Output HSC and semester academic records
+                      - 'socials'  : Get links for Instagram (@dharuna_007) and LinkedIn
+                      - 'clear'    : Clear the terminal screen output
+                    `, 'text-gray-300');
+                    break;
+
+                case 'about':
+                    appendTermLine(`[IDENTITY]: Dharuna (@dharuna_007) 🪷🦢\n[INSTITUTION]: Sri Sairam Engineering College\n[DEPT]: B.E. Computer Science & Engineering (Cyber Security)\n[FOCUS]: Network Auditing, Forensics, and Penetration Testing`, 'text-cyber-cyan');
+                    break;
+
+                case 'skills':
+                    appendTermLine(`[SECURITY CAPABILITIES]:\n• Wireshark & Network Packet Inspection\n• Linux Security / Kali Tools / Nmap\n• Cryptography & Cipher Analysis\n• Python & Web Application Pentesting (OWASP Top 10)`, 'text-cyber-green');
+                    break;
+
+                case 'marks':
+                    let marksOutput = `[ACADEMIC TRANSCRIPT]:\n• 11th Standard: Passed with High Distinction\n• 12th Standard: 98/100 CS, Excellent Board Cutoff\n\n[COLLEGE SEMESTERS - SAIRAM]:\n`;
+                    semesterData.forEach(s => {
+                        marksOutput += `  - ${s.sem}: GPA ${s.gpa} | ${s.subjects}\n`;
+                    });
+                    appendTermLine(marksOutput, 'text-cyber-pink');
+                    break;
+
+                case 'socials':
+                case 'instagram':
+                case 'linkedin':
+                    appendTermLine(`[DIRECT CONNECT NODES]:\n• Instagram: https://www.instagram.com/dharuna_007 (@dharuna_007)\n• LinkedIn: Standard Network Node`, 'text-cyber-cyan');
+                    break;
+
+                case 'clear':
+                    termBody.innerHTML = '';
+                    break;
+
+                default:
+                    appendTermLine(`Command not recognized: '${cmd}'. Type 'help' for instructions.`, 'text-red-400');
+            }
+
+            termBody.scrollTop = termBody.scrollHeight;
+        });
+
+        function appendTermLine(text, textClass = 'text-gray-300') {
+            const div = document.createElement('div');
+            div.className = `whitespace-pre-wrap ${textClass}`;
+            div.textContent = text;
+            termBody.appendChild(div);
+        }
+
+        /* Toast Notification Banner */
+        function showToast(message) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-msg').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
 </body>
-
 </html>
